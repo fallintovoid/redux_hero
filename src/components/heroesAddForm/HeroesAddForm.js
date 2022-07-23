@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid'
 import { useDispatch, useSelector } from "react-redux";
 import { useHttp } from './../../hooks/http.hook'
-import { filtersStartFetch } from "../../actions";
+import { fetchFilters, selectAll } from "../../reducers/filtersSlice";
 import { heroCreated } from "../../reducers/heroesSlice";
+import store from '../../store/index'
 
 const HeroesAddForm = () => {
 
@@ -14,10 +15,12 @@ const HeroesAddForm = () => {
     const {request} = useHttp()
 
     const dispatch = useDispatch()
-    const {filters, filtersFetchingStatus} = useSelector(state => state.filters)
+    const {filtersFetchingStatus} = useSelector(state => state.filters)
+    const filters = selectAll(store.getState());
+
 
     useEffect(() => {
-        dispatch(filtersStartFetch(request))
+        dispatch(fetchFilters())
     }, [])
 
     const onSubmitHandler = (e) => {
@@ -45,10 +48,10 @@ const HeroesAddForm = () => {
         } else if (filter && filter.length > 0) {
             // eslint-disable-next-line
             return (filter.map(item => {
-                if (item === 'all') {
+                if (item.name === 'all') {
                     return;
                 }
-                return <option value={item}>{item}</option>
+                return <option value={item.name} key={item.id}>{item.label}</option>
             }))
         }
             

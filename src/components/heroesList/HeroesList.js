@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect'
 
-import { heroesFetchingError, heroDeleted, fetchHeroes } from '../../reducers/heroesSlice'
+import { heroesFetchingError, heroDeleted, fetchHeroes, selectAll } from '../../reducers/heroesSlice'
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -11,8 +11,9 @@ const HeroesList = () => {
     
     const filteredHeroesSelector = createSelector(
         (state) => state.filters.activeFilter,
-        (state) => state.heroes.heroes,
+        selectAll,
         (activeFilter, heroes) => {
+            console.log(heroes)
             if (activeFilter === 'all') {
                 return heroes
             } else {
@@ -36,7 +37,6 @@ const HeroesList = () => {
 
     useEffect(() => {
         dispatch(fetchHeroes())
-
         // eslint-disable-next-line
     }, []);
 

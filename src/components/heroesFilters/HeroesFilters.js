@@ -7,24 +7,29 @@
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 import { useDispatch, useSelector } from "react-redux";
-import { changeActiveFilter } from "../../reducers/filtersSlice";
+import { changeActiveFilter, selectAll } from "../../reducers/filtersSlice";
+import store from '../../store/index'
 import Spinner from "../spinner/Spinner";
 
 const HeroesFilters = () => {
     const dispatch = useDispatch()
-    const {filters, filtersLoadingStatus} = useSelector(state => state.filters)
+    const {filtersLoadingStatus, activeFilter} = useSelector(state => state.filters)
+    const filters = selectAll(store.getState())
 
     const renderFilters = (filters, filtersLoadingStatus) => {
+        let active;
         if (filtersLoadingStatus === 'loading') {
             return <Spinner/>
         } else if (filtersLoadingStatus === 'error') {
             return <h1>Error</h1>
         } else if (filters && filters.length > 0) {
-            return filters.map(item => 
+           
+            return filters.map(item =>
                 (<button 
-                    className="btn btn-primary" 
-                    onClick={() => dispatch(changeActiveFilter(item))}
-                    >{item}</button>)
+                    key={item.id}
+                    className={`btn ${item.className} `}
+                    onClick={() => dispatch(changeActiveFilter(item.name))}
+                    >{item.label}</button>)
             )
         }
     }
